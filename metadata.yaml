@@ -2,4 +2,4 @@ homepage: "https://www.truendo.com"
 documentation: "https://docs.truendo.com"
 versions:
   - sha: 
-    changeNotes: Initial Version
+    changeNotes: Initial release
