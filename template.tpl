@@ -145,6 +145,21 @@ ___TEMPLATE_PARAMETERS___
           }
         ],
         "valueHint": "de"
+      },
+      {
+        "type": "CHECKBOX",
+        "name": "enable_auto_block",
+        "checkboxText": "Auto-Blocking",
+        "simpleValueType": true,
+        "help": "If Auto-Blocking is enabled in combination with GTM, it can result in Consent Mode Tags not behaving entirely as expected. To ensure that this is not the case, disable auto-blocking for those services in the TRUENDO Console.",
+        "defaultValue": false,
+        "enablingConditions": [
+          {
+            "paramName": "truendo_inject",
+            "paramValue": true,
+            "type": "EQUALS"
+          }
+        ]
       }
     ],
     "help": "If you want to add TRUENDO to your website using Tag Manager, you will need to configure this here. You can still use Consent Mode Settings here if you have added TRUENDO outside the scope of GTM."
@@ -394,7 +409,7 @@ const onUserConsent = (consent) => {
 const injectTruendo = () => {
   if (data.truendo_inject) {
     setInWindow('TruSettings', {}, false); // init
-    setInWindow('TruSettings.autoblocking_disabled', true, true); // disable autoblocking
+    setInWindow('TruSettings.autoblocking_disabled', !data.enable_auto_block, true); // disable autoblocking
     setInWindow('TruSettings.is_consent_mode', true, true); // is consent mode
     setInWindow('TruSettings.siteid', data.site_id, true); // site-id
     setInWindow('TruSettings.transparency', data.transparency, true); // transparency
@@ -1364,6 +1379,6 @@ scenarios: []
 
 ___NOTES___
 
-Created on 5/20/2024, 9:04:06 AM
+Created on 5/23/2024, 6:23:35 AM
 
 
