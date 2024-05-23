@@ -38,7 +38,7 @@ ___TEMPLATE_PARAMETERS___
       {
         "type": "CHECKBOX",
         "name": "truendo_inject",
-        "checkboxText": "Inject TREUNDO via GTM",
+        "checkboxText": "Inject TRUENDO via GTM",
         "simpleValueType": true,
         "help": "To insert TRUENDO via GTM, check this option to enable the configuration."
       },
@@ -1379,6 +1379,6 @@ scenarios: []
 
 ___NOTES___
 
-Created on 5/23/2024, 6:23:35 AM
+Created on 5/23/2024, 11:16:29 AM
 
 
