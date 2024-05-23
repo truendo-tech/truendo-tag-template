@@ -1,5 +1,5 @@
 homepage: "https://www.truendo.com"
 documentation: "https://docs.truendo.com"
 versions:
-  - sha: 0a3c3d21b19082ca3f27459cacb0bfa28b505feb
+  - sha: 0f8802b8433bdb9384a45ceecdda0d7d84d4dec3
     changeNotes: Initial release
