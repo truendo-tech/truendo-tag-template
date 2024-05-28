@@ -416,6 +416,9 @@ const injectTruendo = () => {
     setInWindow('TruSettings.accessibility', data.accessibility, true); // accessibility
     setInWindow('TruSettings.nofont', data.nofont, true); // nofonts
     setInWindow('TruSettings.lang', data.lang_id, true); // language
+    log('autoblocking_disabled = ', data.enable_auto_block);
+    log('accessibility = ', data.accessibility);
+    log('transparency = ', data.transparency);
     
     // inject
     const scriptURL = 'https://cdn.priv.center/pc/truendo_cmp.pid.js';
@@ -425,7 +428,6 @@ const injectTruendo = () => {
 
 
 const main = (data) => {
-  injectTruendo();
   /*
    * Optional settings using gtagSet
    */
@@ -470,8 +472,19 @@ const main = (data) => {
       'wait_for_update': 500,
      });
   }
-
-  const settings = getCookieValues(COOKIE_NAME);
+  
+  const settingsCC = getCookieValues('truendo_cc');
+  log('settingsCC = ', settingsCC);
+  const settingsCMP = getCookieValues(COOKIE_NAME);
+  log('settingsCMP = ', settingsCMP);
+  
+  let settings = settingsCMP;
+  
+  if (settingsCC.length > 0) {
+    settings = settingsCC;
+  }
+  log('settings = ', settings);
+  
   if (typeof settings !== 'undefined' && settings.length > 0) {
     log('getCookieValues = ', settings[0]);
     if (settings[0] !== undefined) {
@@ -487,6 +500,7 @@ const main = (data) => {
   
   setInWindow('truConsentListeners', [], false);
   callInWindow('truConsentListeners.push', onTruendoCookieControl);
+  injectTruendo();
 };
 main(data);
 data.gtmOnSuccess();
@@ -1062,6 +1076,10 @@ ___WEB_PERMISSIONS___
               {
                 "type": 1,
                 "string": "truendo_cmp"
+              },
+              {
+                "type": 1,
+                "string": "truendo_cc"
               }
             ]
           }
@@ -1379,6 +1397,6 @@ scenarios: []
 
 ___NOTES___
 
-Created on 5/23/2024, 11:16:29 AM
+Created on 5/28/2024, 5:49:21 PM
 
 
