@@ -1,12 +1,4 @@
-﻿___TERMS_OF_SERVICE___
-
-By creating or modifying this file you agree to Google Tag Manager's Community
-Template Gallery Developer Terms of Service available at
-https://developers.google.com/tag-manager/gallery-tos (or such other URL as
-Google may provide), as modified from time to time.
-
-
-___INFO___
+﻿___INFO___
 
 {
   "type": "TAG",
@@ -160,6 +152,21 @@ ___TEMPLATE_PARAMETERS___
             "type": "EQUALS"
           }
         ]
+      },
+      {
+        "type": "CHECKBOX",
+        "name": "enable_event_triggers",
+        "checkboxText": "Enable TRUENDO triggers",
+        "simpleValueType": true,
+        "help": "Enable this setting if you would like to trigger tags based on TRUENDO customs events.",
+        "enablingConditions": [
+          {
+            "paramName": "truendo_inject",
+            "paramValue": true,
+            "type": "EQUALS"
+          }
+        ],
+        "defaultValue": false
       }
     ],
     "help": "If you want to add TRUENDO to your website using Tag Manager, you will need to configure this here. You can still use Consent Mode Settings here if you have added TRUENDO outside the scope of GTM."
@@ -370,6 +377,9 @@ const injectScript = require('injectScript');
 const JSON = require('JSON');
 const gtagSet = require('gtagSet');
 const COOKIE_NAME = 'truendo_cmp';
+const createQueue = require('createQueue');  
+const dataLayerPush = createQueue('dataLayer');
+
 /*
  *   Splits the input string using comma as a delimiter, returning an array of
  *   strings
@@ -401,6 +411,24 @@ const onUserConsent = (consent) => {
   };
   log('consentModeStates = ', consentModeStates);
   updateConsentState(consentModeStates);
+  if (data.enable_event_triggers){
+    if (consent.marketing){
+      dataLayerPush({ 'event': 'truendo_cc_marketing' });
+    }
+    if (consent.statistics){
+      dataLayerPush({ 'event': 'truendo_cc_statistics' });
+    }
+    if (consent.preferences){
+      dataLayerPush({ 'event': 'truendo_cc_preferences'});
+    }
+    if (consent.social_sharing){
+      dataLayerPush({ 'event': 'truendo_cc_social_sharing' });
+    }
+    if (consent.social_content){
+      dataLayerPush({ 'event': 'truendo_cc_social_content' });
+    }
+    dataLayerPush({ 'event': 'truendo_initialized' });
+  }
 };
 
 /*
@@ -1009,6 +1037,45 @@ ___WEB_PERMISSIONS___
                     "boolean": true
                   }
                 ]
+              },
+              {
+                "type": 3,
+                "mapKey": [
+                  {
+                    "type": 1,
+                    "string": "key"
+                  },
+                  {
+                    "type": 1,
+                    "string": "read"
+                  },
+                  {
+                    "type": 1,
+                    "string": "write"
+                  },
+                  {
+                    "type": 1,
+                    "string": "execute"
+                  }
+                ],
+                "mapValue": [
+                  {
+                    "type": 1,
+                    "string": "dataLayer"
+                  },
+                  {
+                    "type": 8,
+                    "boolean": true
+                  },
+                  {
+                    "type": 8,
+                    "boolean": true
+                  },
+                  {
+                    "type": 8,
+                    "boolean": true
+                  }
+                ]
               }
             ]
           }
@@ -1035,6 +1102,10 @@ ___WEB_PERMISSIONS___
               {
                 "type": 1,
                 "string": "ads_data_redaction"
+              },
+              {
+                "type": 1,
+                "string": "event"
               },
               {
                 "type": 1,
