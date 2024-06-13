@@ -1,4 +1,4 @@
-```txt
+
 # TRUENDO CMP Tag Template - README
 
 ## Important Note
