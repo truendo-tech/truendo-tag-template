@@ -7,7 +7,7 @@ For the most up-to-date and detailed instructions, please refer to the official 
 Visit [www.truendo.com](https://www.truendo.com) for more information about TRUENDO and its services.
 
 ## Introduction
-This README provides detailed instructions for setting up the TRUENDO Consent Management Platform (CMP) using Google Tag Manager (GTM). TRUENDO supports two modes of operation: Basic Consent Mode and Advanced Consent Mode (this is the Google default). 
+This README provides basic instructions for setting up the TRUENDO Consent Management Platform (CMP) using Google Tag Manager (GTM). TRUENDO supports two modes of operation: Basic Consent Mode and Advanced Consent Mode (this is the Google default). 
 
 ## Basic Consent Mode
 In Basic Consent Mode, Google tags are prevented from loading until a user interacts with the consent banner. No data is transmitted to Google before the user consents.
