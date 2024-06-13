@@ -1,4 +1,3 @@
-```txt
 # TRUENDO CMP Tag Template - README
 
 ## Important Note
@@ -110,4 +109,4 @@ For further assistance, refer to the TRUENDO Documentation or contact TRUENDO su
 - [Download TRUENDO Tag Template](https://github.com/truendo-tech/truendo-tag-template/blob/main/template.tpl)
 
 Last Updated: June 7, 2024
-```
+
