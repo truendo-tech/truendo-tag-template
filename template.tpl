@@ -461,7 +461,7 @@ const main = (data) => {
    */
   gtagSet('ads_data_redaction', data.ads_data_redaction);
   gtagSet('url_passthrough', data.url_passthrough);
-  //gtagSet('developer_id.101407572775492679166', true);
+  gtagSet('developer_id.dMjBiZm', true);
   
   // Set default consent state(s)
   log('data = ', data);
