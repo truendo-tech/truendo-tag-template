@@ -1,5 +1,12 @@
 homepage: "https://www.truendo.com"
 documentation: "https://docs.truendo.com"
 versions:
+# Latest version
+  - sha: 6ae56dc35492246b63ce90dff0565dc62e622448
+    changeNotes: |2
+      Update to Triggering
+      Developer ID update
+
+# Older versions versions:
   - sha: 0f8802b8433bdb9384a45ceecdda0d7d84d4dec3
     changeNotes: Initial release
