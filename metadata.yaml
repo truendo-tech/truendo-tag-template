@@ -3,9 +3,12 @@ documentation: "https://docs.truendo.com"
 versions:
 
 # Latest version
+  - sha: 25f559b5595dcad826efb8574dbeb415c729b9a7
+    changeNotes: Updated template files
+  
+# Older versions versions:
   - sha: 47eb3f35a17adbda369780e2ddd90dee2e3e7d3b
     changeNotes: Updated template files
-# Older versions versions:
   - sha: 76911ceec0bcc59bcee63d159259f1dbff4b32bc
     changeNotes: Updated template files
   - sha: 6ae56dc35492246b63ce90dff0565dc62e622448
