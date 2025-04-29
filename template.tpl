@@ -453,7 +453,7 @@ const injectTruendo = () => {
     setInWindow('TruSettings.siteid', data.site_id, true); // site-id
     setInWindow('TruSettings.transparency', data.transparency, true); // transparency
     setInWindow('TruSettings.accessibility', data.accessibility, true); // accessibility
-    setInWindow('TruSettings.nofont', data.nofont, true); // nofonts
+    setInWindow('TruSettings.nofont', data.nofont ? "true": false, true); // nofonts
     setInWindow('TruSettings.lang', data.lang_id, true); // language
     log('autoblocking_disabled = ', data.enable_auto_block);
     log('accessibility = ', data.accessibility);
