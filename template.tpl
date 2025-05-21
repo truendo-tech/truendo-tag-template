@@ -10,9 +10,8 @@ ___INFO___
 
 {
   "type": "TAG",
-  "id": "cvt_temp_public_id",
+  "id": "cvt_MR4V3",
   "version": 1,
-  "securityGroups": [],
   "displayName": "TRUENDO Cookie Consent Management",
   "brand": {
     "id": "github.com_truendo-tech",
@@ -22,7 +21,8 @@ ___INFO___
   "description": "TRUENDO CMP Integration Tag with Consent Mode v2 support",
   "containerContexts": [
     "WEB"
-  ]
+  ],
+  "securityGroups": []
 }
 
 
@@ -152,7 +152,7 @@ ___TEMPLATE_PARAMETERS___
         "checkboxText": "Auto-Blocking",
         "simpleValueType": true,
         "help": "If Auto-Blocking is enabled in combination with GTM, it can result in Consent Mode Tags not behaving entirely as expected. To ensure that this is not the case, disable auto-blocking for those services in the TRUENDO Console.",
-        "defaultValue": false,
+        "defaultValue": true,
         "enablingConditions": [
           {
             "paramName": "truendo_inject",
