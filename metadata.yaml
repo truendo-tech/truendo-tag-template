@@ -3,10 +3,12 @@ documentation: "https://docs.truendo.com"
 versions:
 
 # Latest version
-  - sha: 71558fe02ab3ffc7a1d0e15586a990163ac76212
-    changeNotes: Updated default settings
+  - sha: 83e422698bd143211a30c41e9f8ebb7d6c47732c
+    changeNotes: Updated trigger settings
   
 # Older versions versions:
+  - sha: 71558fe02ab3ffc7a1d0e15586a990163ac76212
+    changeNotes: Updated default settings
   - sha: d6a75574736cd02fc0f922ff7b4ef8c9cc13a546
     changeNotes: Updated template files
   - sha: 25f559b5595dcad826efb8574dbeb415c729b9a7
