@@ -167,13 +167,7 @@ ___TEMPLATE_PARAMETERS___
         "checkboxText": "Enable TRUENDO triggers",
         "simpleValueType": true,
         "help": "Enable this setting if you would like to trigger tags based on TRUENDO customs events.",
-        "enablingConditions": [
-          {
-            "paramName": "truendo_inject",
-            "paramValue": true,
-            "type": "EQUALS"
-          }
-        ],
+        "enablingConditions": [],
         "defaultValue": false
       }
     ],
