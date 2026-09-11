@@ -342,7 +342,141 @@ ___TEMPLATE_PARAMETERS___
             "isUnique": true
           }
         ],
-        "help": "This allows you to specify the default consent settings. If not configured it will default all the states, except security_storage to denied. Add row to customize."
+        "help": "This allows you to specify the default consent settings. If not configured, consent defaults to denied in the Opt-in Regions below and granted everywhere else. Add row to customize."
+      },
+      {
+        "type": "GROUP",
+        "name": "opt_in_regions_group",
+        "displayName": "Opt-in Regions",
+        "groupStyle": "ZIPPY_CLOSED",
+        "subParams": [
+          {
+            "type": "PARAM_TABLE",
+            "name": "opt_in_regions",
+            "displayName": "Opt-in Region Country Codes",
+            "paramTableColumns": [
+              {
+                "param": {
+                  "type": "TEXT",
+                  "name": "country",
+                  "displayName": "Country Code",
+                  "simpleValueType": true,
+                  "valueValidators": [
+                    {
+                      "type": "REGEX",
+                      "args": [
+                        "^[A-Za-z]{2}$"
+                      ],
+                      "errorMessage": "Enter a 2-letter ISO 3166-1 alpha-2 country code (e.g. DE)."
+                    }
+                  ],
+                  "valueHint": "DE"
+                },
+                "isUnique": true
+              }
+            ],
+            "defaultValue": [
+              {
+                "country": "AT"
+              },
+              {
+                "country": "BE"
+              },
+              {
+                "country": "BG"
+              },
+              {
+                "country": "HR"
+              },
+              {
+                "country": "CY"
+              },
+              {
+                "country": "CZ"
+              },
+              {
+                "country": "DK"
+              },
+              {
+                "country": "EE"
+              },
+              {
+                "country": "FI"
+              },
+              {
+                "country": "FR"
+              },
+              {
+                "country": "DE"
+              },
+              {
+                "country": "GR"
+              },
+              {
+                "country": "HU"
+              },
+              {
+                "country": "IS"
+              },
+              {
+                "country": "IE"
+              },
+              {
+                "country": "IT"
+              },
+              {
+                "country": "LV"
+              },
+              {
+                "country": "LI"
+              },
+              {
+                "country": "LT"
+              },
+              {
+                "country": "LU"
+              },
+              {
+                "country": "MT"
+              },
+              {
+                "country": "NL"
+              },
+              {
+                "country": "NO"
+              },
+              {
+                "country": "PL"
+              },
+              {
+                "country": "PT"
+              },
+              {
+                "country": "RO"
+              },
+              {
+                "country": "SK"
+              },
+              {
+                "country": "SI"
+              },
+              {
+                "country": "ES"
+              },
+              {
+                "country": "SE"
+              },
+              {
+                "country": "GB"
+              },
+              {
+                "country": "CH"
+              }
+            ],
+            "help": "Countries listed here default to denied (opt-in). All other regions default to granted (opt-out). Pre-populated with the standard opt-in jurisdictions (EEA, UK, Switzerland). Only applies when no rows are configured in \"Default settings\" above. If you delete all rows, the built-in list (EEA + UK + CH) is used."
+          }
+        ],
+        "help": "Region-aware consent defaults. Expand to review or edit the list of opt-in countries."
       },
       {
         "type": "CHECKBOX",
@@ -379,7 +513,16 @@ const injectScript = require('injectScript');
 const JSON = require('JSON');
 const gtagSet = require('gtagSet');
 const COOKIE_NAME = 'truendo_cmp';
-const createQueue = require('createQueue');  
+
+/*
+ *   Built-in opt-in regions (EEA + UK + CH). Used when the Opt-in Regions
+ *   table is left empty.
+ */
+const DEFAULT_OPT_IN_REGIONS = ['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK',
+  'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IS', 'IE', 'IT', 'LV', 'LI', 'LT',
+  'LU', 'MT', 'NL', 'NO', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE', 'GB',
+  'CH'];
+const createQueue = require('createQueue');
 const dataLayerPush = createQueue('dataLayer');
 
 /*
@@ -388,7 +531,7 @@ const dataLayerPush = createQueue('dataLayer');
  */
 const splitInput = (input) => {
   if (input) {
-  return input.split(',')
+    return input.split(',')
       .map(entry => entry.trim())
       .filter(entry => entry.length !== 0);
   } else {
@@ -413,23 +556,23 @@ const onUserConsent = (consent) => {
   };
   log('consentModeStates = ', consentModeStates);
   updateConsentState(consentModeStates);
-  if (data.enable_event_triggers){
-    if (consent.marketing){
+  if (data.enable_event_triggers) {
+    if (consent.marketing) {
       dataLayerPush({ 'event': 'truendo_cc_marketing' });
     }
-    if (consent.statistics){
+    if (consent.statistics) {
       dataLayerPush({ 'event': 'truendo_cc_statistics' });
     }
-    if (consent.preferences){
-      dataLayerPush({ 'event': 'truendo_cc_preferences'});
+    if (consent.preferences) {
+      dataLayerPush({ 'event': 'truendo_cc_preferences' });
     }
-    if (consent.social_sharing){
+    if (consent.social_sharing) {
       dataLayerPush({ 'event': 'truendo_cc_social_sharing' });
     }
-    if (consent.social_content){
+    if (consent.social_content) {
       dataLayerPush({ 'event': 'truendo_cc_social_content' });
     }
-    if (consent.add_features){
+    if (consent.add_features) {
       dataLayerPush({ 'event': 'truendo_cc_add_features' });
     }
     dataLayerPush({ 'event': 'truendo_initialized' });
@@ -447,14 +590,17 @@ const injectTruendo = () => {
     setInWindow('TruSettings.siteid', data.site_id, true); // site-id
     setInWindow('TruSettings.transparency', data.transparency, true); // transparency
     setInWindow('TruSettings.accessibility', data.accessibility, true); // accessibility
-    setInWindow('TruSettings.nofont', data.nofont ? "true": false, true); // nofonts
+    setInWindow('TruSettings.nofont', data.nofont ? "true" : false, true); // nofonts
     setInWindow('TruSettings.lang', data.lang_id, true); // language
     log('autoblocking_disabled = ', data.enable_auto_block);
     log('accessibility = ', data.accessibility);
     log('transparency = ', data.transparency);
-    
-    // inject
-    const scriptURL = 'https://cdn.priv.center/pc/truendo_cmp.pid.js';
+
+    // Build the script URL with the site_id injected
+    const siteId = data.site_id;
+    const scriptURL = 'https://cdn-geo.priv.center/' + siteId + '/?id=' + siteId;
+
+    // Inject
     injectScript(scriptURL, data.gtmOnSuccess, data.gtmOnFailure);
   }
 };
@@ -467,12 +613,38 @@ const main = (data) => {
   gtagSet('ads_data_redaction', data.ads_data_redaction);
   gtagSet('url_passthrough', data.url_passthrough);
   gtagSet('developer_id.dMjBiZm', true);
-  
+
   // Set default consent state(s)
   log('data = ', data);
   const defaults = data.defaultSettings || [];
 
-  if(defaults.length > 0) {
+  // Build the opt-in region list from the Opt-in Regions table; fall back
+  // to the built-in list (EEA + UK + CH) if the table is empty
+  let optInRegions = [];
+  if (data.opt_in_regions && data.opt_in_regions.length > 0) {
+    optInRegions = data.opt_in_regions
+      .map(row => (row.country || '').trim().toUpperCase())
+      .filter(code => code.length === 2);
+  }
+  if (optInRegions.length === 0) {
+    optInRegions = DEFAULT_OPT_IN_REGIONS;
+  }
+  log('optInRegions = ', optInRegions);
+
+  // 1) Global baseline: granted (opt-out territories measure immediately).
+  setDefaultConsentState({
+    'ad_storage': 'granted',
+    'analytics_storage': 'granted',
+    'functionality_storage': 'granted',
+    'personalization_storage': 'granted',
+    'security_storage': 'granted',
+    'ad_user_data': 'granted',
+    'ad_personalization': 'granted',
+    'wait_for_update': 500,
+  });
+
+  // 2) User-defined defaults override the baseline where configured.
+  if (defaults.length > 0) {
     defaults.forEach(settings => {
       const defaultData = {
         'ad_storage': settings.ad_storage,
@@ -482,42 +654,44 @@ const main = (data) => {
         'security_storage': settings.security_storage,
         'ad_user_data': settings.ad_user_data,
         'ad_personalization': settings.ad_personalization,
+        // wait_for_update (ms) allows time to receive visitor choices from the CMP
         'wait_for_update': 500,
       };
-      
+
       const regions = splitInput(settings.regions);
       if (regions.length > 0) {
         defaultData.region = regions;
       }
-      // wait_for_update (ms) allows for time to receive visitor choices from the CMP
-      defaultData.wait_for_update = 500;
       setDefaultConsentState(defaultData);
     });
-  } else {
-    setDefaultConsentState({
-      'ad_storage': 'denied',
-      'analytics_storage': 'denied',
-      'functionality_storage': 'denied',
-      'personalization_storage': 'denied',
-      'security_storage': 'granted',
-      'ad_user_data': 'denied',
-      'ad_personalization': 'denied',
-      'wait_for_update': 500,
-     });
   }
-  
-  const settingsCC = getCookieValues('truendo_cc');
+
+  // 3) Opt-in regions: ALWAYS denied, applied last — wins on specificity
+  //    against regionless entries and on recency against region-scoped ones.
+  setDefaultConsentState({
+    'ad_storage': 'denied',
+    'analytics_storage': 'denied',
+    'functionality_storage': 'denied',
+    'personalization_storage': 'denied',
+    'security_storage': 'granted',
+    'ad_user_data': 'denied',
+    'ad_personalization': 'denied',
+    'region': optInRegions,
+    'wait_for_update': 500,
+  });
+
+  const settingsCC = getCookieValues('truendo_cc') || [];
   log('settingsCC = ', settingsCC);
-  const settingsCMP = getCookieValues(COOKIE_NAME);
+  const settingsCMP = getCookieValues(COOKIE_NAME) || [];
   log('settingsCMP = ', settingsCMP);
-  
+
   let settings = settingsCMP;
-  
+
   if (settingsCC.length > 0) {
     settings = settingsCC;
   }
   log('settings = ', settings);
-  
+
   if (typeof settings !== 'undefined' && settings.length > 0) {
     log('getCookieValues = ', settings[0]);
     if (settings[0] !== undefined) {
@@ -530,7 +704,7 @@ const main = (data) => {
     log('onTruendoCookieControl = ', cookieSettings);
     onUserConsent(cookieSettings);
   };
-  
+
   setInWindow('truConsentListeners', [], false);
   callInWindow('truConsentListeners.push', onTruendoCookieControl);
   injectTruendo();
@@ -1468,7 +1642,134 @@ ___WEB_PERMISSIONS___
 
 ___TESTS___
 
-scenarios: []
+scenarios:
+- name: Fallback defaults - granted globally, denied for built-in opt-in regions
+  code: |-
+    const mockData = {
+      defaultSettings: [],
+      opt_in_regions: [],
+    };
+
+    runCode(mockData);
+
+    // Opt-out default: granted everywhere (regionless)
+    assertApi('setDefaultConsentState').wasCalledWith({
+      'ad_storage': 'granted',
+      'analytics_storage': 'granted',
+      'functionality_storage': 'granted',
+      'personalization_storage': 'granted',
+      'security_storage': 'granted',
+      'ad_user_data': 'granted',
+      'ad_personalization': 'granted',
+      'wait_for_update': 500,
+    });
+
+    // Opt-in regions: denied, scoped to the built-in EEA + UK + CH list
+    assertApi('setDefaultConsentState').wasCalledWith({
+      'ad_storage': 'denied',
+      'analytics_storage': 'denied',
+      'functionality_storage': 'denied',
+      'personalization_storage': 'denied',
+      'security_storage': 'granted',
+      'ad_user_data': 'denied',
+      'ad_personalization': 'denied',
+      'region': ['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR',
+        'DE', 'GR', 'HU', 'IS', 'IE', 'IT', 'LV', 'LI', 'LT', 'LU', 'MT',
+        'NL', 'NO', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE', 'GB', 'CH'],
+      'wait_for_update': 500,
+    });
+- name: Fallback defaults - denied scoped to custom opt-in regions
+  code: |-
+    const mockData = {
+      defaultSettings: [],
+      opt_in_regions: [
+        {country: 'DE'},
+        {country: 'AT'},
+      ],
+    };
+
+    runCode(mockData);
+
+    assertApi('setDefaultConsentState').wasCalledWith({
+      'ad_storage': 'denied',
+      'analytics_storage': 'denied',
+      'functionality_storage': 'denied',
+      'personalization_storage': 'denied',
+      'security_storage': 'granted',
+      'ad_user_data': 'denied',
+      'ad_personalization': 'denied',
+      'region': ['DE', 'AT'],
+      'wait_for_update': 500,
+    });
+- name: Fallback defaults - country codes are trimmed and uppercased
+  code: |-
+    const mockData = {
+      defaultSettings: [],
+      opt_in_regions: [
+        {country: 'de'},
+        {country: ' at '},
+      ],
+    };
+
+    runCode(mockData);
+
+    assertApi('setDefaultConsentState').wasCalledWith({
+      'ad_storage': 'denied',
+      'analytics_storage': 'denied',
+      'functionality_storage': 'denied',
+      'personalization_storage': 'denied',
+      'security_storage': 'granted',
+      'ad_user_data': 'denied',
+      'ad_personalization': 'denied',
+      'region': ['DE', 'AT'],
+      'wait_for_update': 500,
+    });
+- name: Custom default settings rows take full precedence over fallback
+  code: |-
+    const mockData = {
+      defaultSettings: [
+        {
+          ad_storage: 'denied',
+          ad_user_data: 'denied',
+          ad_personalization: 'denied',
+          analytics_storage: 'denied',
+          functionality_storage: 'granted',
+          personalization_storage: 'denied',
+          security_storage: 'granted',
+          regions: 'US-CA',
+        },
+      ],
+      opt_in_regions: [
+        {country: 'DE'},
+      ],
+    };
+
+    runCode(mockData);
+
+    // The custom row is applied as-is, scoped to US-CA
+    assertApi('setDefaultConsentState').wasCalledWith({
+      'ad_storage': 'denied',
+      'analytics_storage': 'denied',
+      'functionality_storage': 'granted',
+      'personalization_storage': 'denied',
+      'security_storage': 'granted',
+      'ad_user_data': 'denied',
+      'ad_personalization': 'denied',
+      'wait_for_update': 500,
+      'region': ['US-CA'],
+    });
+
+    // The opt-in/opt-out fallback must NOT fire when custom rows exist
+    assertApi('setDefaultConsentState').wasNotCalledWith({
+      'ad_storage': 'granted',
+      'analytics_storage': 'granted',
+      'functionality_storage': 'granted',
+      'personalization_storage': 'granted',
+      'security_storage': 'granted',
+      'ad_user_data': 'granted',
+      'ad_personalization': 'granted',
+      'wait_for_update': 500,
+    });
 
 
 ___NOTES___
