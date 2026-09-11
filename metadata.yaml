@@ -3,10 +3,12 @@ documentation: "https://docs.truendo.com"
 versions:
 
 # Latest version
-  - sha: 83e422698bd143211a30c41e9f8ebb7d6c47732c
-    changeNotes: Updated trigger settings
+  - sha: 25186191fd8692a0ecbc6980e2dc0a3db6a8419d
+    changeNotes: Google Consent Mode Support Updated
   
 # Older versions versions:
+  - sha: 83e422698bd143211a30c41e9f8ebb7d6c47732c
+    changeNotes: Updated trigger settings
   - sha: 71558fe02ab3ffc7a1d0e15586a990163ac76212
     changeNotes: Updated default settings
   - sha: d6a75574736cd02fc0f922ff7b4ef8c9cc13a546
